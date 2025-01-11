@@ -1,6 +1,9 @@
 #!/bin/bash
 
 WHICH_EXTRACTION_TYPE=$1
+PATH_TO_LINEAGE_ZIP=$2
+PATH_TO_EXTRACT_LINEAGE_ZIP=$3
+
 shift
 
 USER=$(id -un)
@@ -22,7 +25,16 @@ docker run \
     "extracting_blobs_from_zips" \
     $@
 
-cd $2
-mkdir system
+cd $PATH_TO_EXTRACT_LINEAGE_ZIP
+
+mkdir system || sudo umount -R system && rm -rdf system && mkdir system
+
 sudo mount system.img system/
-sudo mount vendor.img system/vendor/
+
+IMAGES=("vendor" "odm" "product" "system_ext")
+
+for IMAGE in ${IMAGES[@]}; do
+    if [ -f "$IMAGE.img" ]; then
+        sudo mount $IMAGE.img system/$IMAGE
+    fi
+done

@@ -6,10 +6,7 @@ ARG GROUP_ID
 
 RUN apt-get update
 RUN apt-get install -y \
-    git \
-    unzip \
-    python2 \
-    brotli
+    simg2img 
 
 RUN groupadd -g ${GROUP_ID} ${USER}
 RUN useradd -m -u ${USER_ID} -g ${USER} ${USER}
